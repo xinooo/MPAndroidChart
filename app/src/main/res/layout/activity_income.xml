@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
+
+    <EditText
+        android:id="@+id/edit_Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinner"
+        android:layout_marginTop="15dp"
+        android:textSize="16sp"
+        android:hint="Name"/>
+
+    <EditText
+        android:id="@+id/edit_Dollars"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_Name"
+        android:layout_marginTop="15dp"
+        android:inputType="number"
+        android:textSize="16sp"
+        android:hint="Dollars"/>
+
+    <Button
+        android:id="@+id/btn_ok"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@id/edit_Dollars"
+        android:layout_margin="15dp"
+        android:text="Enter"/>
+
+</RelativeLayout>
