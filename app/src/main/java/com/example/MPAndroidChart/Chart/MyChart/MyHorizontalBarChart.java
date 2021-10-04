@@ -33,7 +33,7 @@ public class MyHorizontalBarChart extends HorizontalBarChart {
         mLeftAxisTransformer = new TransformerHorizontalBarChart(mViewPortHandler);
         mRightAxisTransformer = new TransformerHorizontalBarChart(mViewPortHandler);
 
-        mRenderer = new MyHorizontalBarChartRenderer(this, mAnimator, mViewPortHandler);
+        mRenderer = new MyHorizontalBarChartRenderer(this, mAnimator, mViewPortHandler, true);
         setHighlighter(new HorizontalBarHighlighter(this));
 
         mAxisRendererLeft = new YAxisRendererHorizontalBarChart(mViewPortHandler, mAxisLeft, mLeftAxisTransformer);

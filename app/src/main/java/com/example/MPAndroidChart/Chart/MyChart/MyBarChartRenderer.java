@@ -2,7 +2,10 @@ package com.example.MPAndroidChart.Chart.MyChart;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.util.Log;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
@@ -20,9 +23,11 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 public class MyBarChartRenderer extends BarChartRenderer {
 
     private RectF mBarShadowRectBuffer = new RectF();
+    private boolean mIsCircle;
 
-    public MyBarChartRenderer(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler) {
+    public MyBarChartRenderer(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler, boolean iscircle) {
         super(chart, animator, viewPortHandler);
+        this.mIsCircle = iscircle;
     }
 
     protected void drawDataSet(Canvas c, IBarDataSet dataSet, int index) {
@@ -72,14 +77,17 @@ public class MyBarChartRenderer extends BarChartRenderer {
 
                 float radius = (mBarShadowRectBuffer.right - mBarShadowRectBuffer.left) / 2;
 
-                if (y > 0){
-                    c.drawRect(mBarShadowRectBuffer.left, mBarShadowRectBuffer.top + radius, mBarShadowRectBuffer.right, mBarShadowRectBuffer.bottom, mShadowPaint);
-                    c.drawCircle(mBarShadowRectBuffer.left + radius, mBarShadowRectBuffer.top + radius, radius, mShadowPaint);
+                if (mIsCircle) {
+                    if (y > 0){
+                        c.drawRect(mBarShadowRectBuffer.left, mBarShadowRectBuffer.top + radius, mBarShadowRectBuffer.right, mBarShadowRectBuffer.bottom, mShadowPaint);
+                        c.drawCircle(mBarShadowRectBuffer.left + radius, mBarShadowRectBuffer.top + radius, radius, mShadowPaint);
+                    }else {
+                        c.drawRect(mBarShadowRectBuffer.left, mBarShadowRectBuffer.top, mBarShadowRectBuffer.right, mBarShadowRectBuffer.bottom - radius, mShadowPaint);
+                        c.drawCircle(mBarShadowRectBuffer.left + radius, mBarShadowRectBuffer.bottom - radius, radius, mShadowPaint);
+                    }
                 }else {
-                    c.drawRect(mBarShadowRectBuffer.left, mBarShadowRectBuffer.top, mBarShadowRectBuffer.right, mBarShadowRectBuffer.bottom - radius, mShadowPaint);
-                    c.drawCircle(mBarShadowRectBuffer.left + radius, mBarShadowRectBuffer.bottom - radius, radius, mShadowPaint);
+                    c.drawRect(mBarShadowRectBuffer, mShadowPaint);
                 }
-//                c.drawRect(mBarShadowRectBuffer, mShadowPaint);
             }
         }
 
@@ -96,9 +104,6 @@ public class MyBarChartRenderer extends BarChartRenderer {
 
         final boolean isSingleColor = dataSet.getColors().size() == 1;
 
-        if (isSingleColor) {
-            mRenderPaint.setColor(dataSet.getColor());
-        }
 
         for (int j = 0; j < buffer.size(); j += 4) {
 
@@ -107,40 +112,95 @@ public class MyBarChartRenderer extends BarChartRenderer {
 
             if (!mViewPortHandler.isInBoundsRight(buffer.buffer[j]))
                 break;
+            float y = dataSet.getEntryForIndex(j/4).getY();
 
             if (!isSingleColor) {
                 // Set the color for the currently drawn value. If the index
                 // is out of bounds, reuse colors.
-                mRenderPaint.setColor(dataSet.getColor(j / 4));
+
+//                mRenderPaint.setColor(dataSet.getColor(j / 4));
+                coloringLine(dataSet,mRenderPaint,c.getWidth(),c.getHeight(),dataSet.getColor(j / 4), y > 0);
+            }else {
+                coloringLine(dataSet,mRenderPaint,c.getWidth(),c.getHeight(),dataSet.getColor(), y > 0);
             }
 
-            float y = dataSet.getEntryForIndex(j/4).getY();
 
             float left = buffer.buffer[j];
             float top = buffer.buffer[j + 1];
             float right = buffer.buffer[j + 2];
             float bottom = buffer.buffer[j + 3];
             float radius = (right - left) / 2;
-            if (y > 0) {
-                //高度減去圓的半徑
-                c.drawRect(left, top + radius, right, bottom, mRenderPaint);
-                //畫圓
-                c.drawCircle(left + radius, top + radius, radius, mRenderPaint);
+
+            if (mIsCircle) {
+                if (y > 0) {
+                    //高度減去圓的半徑
+                    c.drawRect(left, top + radius, right, bottom, mRenderPaint);
+                    //畫圓
+                    c.drawCircle(left + radius, top + radius, radius, mRenderPaint);
+                }else {
+                    //高度減去圓的半徑
+                    c.drawRect(left, top, right, bottom - radius, mRenderPaint);
+                    //畫圓
+                    c.drawCircle(left + radius, bottom - radius, radius, mRenderPaint);
+                }
             }else {
-                //高度減去圓的半徑
-                c.drawRect(left, top, right, bottom - radius, mRenderPaint);
-                //畫圓
-                c.drawCircle(left + radius, bottom - radius, radius, mRenderPaint);
+                c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
+                        buffer.buffer[j + 3], mRenderPaint);
             }
 
-
-//            c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-//                    buffer.buffer[j + 3], mRenderPaint);
 
             if (drawBorder) {
                 c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
                         buffer.buffer[j + 3], mBarBorderPaint);
             }
         }
+    }
+
+    private void coloringLine(IBarDataSet dataSet, Paint renderer, float pointX, float pointY, Integer color, boolean b) {
+
+        try {
+            if(dataSet.getColors().size() == 1){
+                if (b){
+                    mRenderPaint.setShader(new LinearGradient(0,pointY,0,0,color,Color.BLUE, Shader.TileMode.CLAMP));
+                }else {
+                    mRenderPaint.setShader(new LinearGradient(0,pointY,0,-0,Color.BLUE,color, Shader.TileMode.CLAMP));
+                }
+            }else{
+                if (b) {
+                    mRenderPaint.setShader(new LinearGradient(
+                            0,
+                            pointY,
+                            0,
+                            0,
+                            preparePrimitiveColors(dataSet),
+                            null,
+                            Shader.TileMode.CLAMP
+                    ));
+                } else {
+                    mRenderPaint.setShader(new LinearGradient(
+                            0,
+                            pointY,
+                            0,
+                            0,
+                            preparePrimitiveColors(dataSet),
+                            null,
+                            Shader.TileMode.CLAMP
+                    ));
+                }
+            }
+        } catch (NullPointerException | IndexOutOfBoundsException ex) {
+            renderer.setColor(dataSet.getColor());
+            ex.printStackTrace();
+        }
+    }
+
+    private int[] preparePrimitiveColors(IBarDataSet dataSet) {
+        int[] colors = new int[dataSet.getColors().size()];
+        int i = 0;
+        for (int color : dataSet.getColors()) {
+            colors[i] = color;
+            i++;
+        }
+        return colors;
     }
 }

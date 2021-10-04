@@ -23,7 +23,7 @@ public class MyBarChart extends BarChart {
     protected void init() {
         super.init();
 
-        mRenderer = new MyBarChartRenderer(this, mAnimator, mViewPortHandler);
+        mRenderer = new MyBarChartRenderer(this, mAnimator, mViewPortHandler, true);
 
         setHighlighter(new BarHighlighter(this));
 

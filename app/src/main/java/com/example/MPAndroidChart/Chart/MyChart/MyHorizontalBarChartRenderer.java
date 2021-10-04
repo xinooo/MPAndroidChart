@@ -26,9 +26,11 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 public class MyHorizontalBarChartRenderer extends HorizontalBarChartRenderer {
 
     private RectF mBarShadowRectBuffer = new RectF();
+    private boolean mIsCircle;
 
-    public MyHorizontalBarChartRenderer(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler) {
+    public MyHorizontalBarChartRenderer(BarDataProvider chart, ChartAnimator animator, ViewPortHandler viewPortHandler, boolean iscircle) {
         super(chart, animator, viewPortHandler);
+        this.mIsCircle = iscircle;
     }
 
     @Override
@@ -79,12 +81,15 @@ public class MyHorizontalBarChartRenderer extends HorizontalBarChartRenderer {
 
                 float radius = (mBarShadowRectBuffer.bottom - mBarShadowRectBuffer.top) / 2;
 
-                //高度減去圓的半徑
-                c.drawRect(mBarShadowRectBuffer.left, mBarShadowRectBuffer.top, mBarShadowRectBuffer.right - radius, mBarShadowRectBuffer.bottom, mShadowPaint);
-                //畫圓
-                c.drawCircle(mBarShadowRectBuffer.right - radius, mBarShadowRectBuffer.top + radius, radius, mShadowPaint);
 
-//                c.drawRect(mBarShadowRectBuffer, mShadowPaint);
+                if (mIsCircle){
+                    //高度減去圓的半徑
+                    c.drawRect(mBarShadowRectBuffer.left, mBarShadowRectBuffer.top, mBarShadowRectBuffer.right - radius, mBarShadowRectBuffer.bottom, mShadowPaint);
+                    //畫圓
+                    c.drawCircle(mBarShadowRectBuffer.right - radius, mBarShadowRectBuffer.top + radius, radius, mShadowPaint);
+                }else {
+                    c.drawRect(mBarShadowRectBuffer, mShadowPaint);
+                }
             }
         }
 
@@ -125,14 +130,15 @@ public class MyHorizontalBarChartRenderer extends HorizontalBarChartRenderer {
             float bottom = buffer.buffer[j + 3];
             float radius = (bottom - top) / 2;
 
-            //高度減去圓的半徑
-            c.drawRect(left, top, right - radius, bottom, mRenderPaint);
-            //畫圓
-            c.drawCircle(right - radius, top + radius, radius, mRenderPaint);
-
-
-//            c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-//                    buffer.buffer[j + 3], mRenderPaint);
+            if (mIsCircle){
+                //高度減去圓的半徑
+                c.drawRect(left, top, right - radius, bottom, mRenderPaint);
+                //畫圓
+                c.drawCircle(right - radius, top + radius, radius, mRenderPaint);
+            }else {
+                c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
+                        buffer.buffer[j + 3], mRenderPaint);
+            }
 
             if (drawBorder) {
                 c.drawRect(buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
@@ -145,9 +151,9 @@ public class MyHorizontalBarChartRenderer extends HorizontalBarChartRenderer {
 
         try {
             if(dataSet.getColors().size() == 1){
-                mRenderPaint.setShader(new LinearGradient(0,0,pointX,0,color,Color.WHITE, Shader.TileMode.CLAMP));
+                renderer.setShader(new LinearGradient(0,0,pointX,0,color,Color.WHITE, Shader.TileMode.CLAMP));
             }else{
-                mRenderPaint.setShader(new LinearGradient(
+                renderer.setShader(new LinearGradient(
                         0,
                         0,
                         pointX,

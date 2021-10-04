@@ -14,6 +14,7 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 public class MyXAxisRenderer extends XAxisRenderer {
     public static float Hight = 2;
+    public boolean isTop = false;
     public MyXAxisRenderer(ViewPortHandler viewPortHandler, XAxis xAxis, Transformer trans) {
         super(viewPortHandler, xAxis, trans);
     }
@@ -56,7 +57,7 @@ public class MyXAxisRenderer extends XAxisRenderer {
 
 
         Paint mFirstLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mFirstLinePaint.setColor(Color.BLACK);
+        mFirstLinePaint.setColor(isTop? Color.BLUE:Color.BLACK);
         mFirstLinePaint.setTextAlign(Paint.Align.CENTER);
         mFirstLinePaint.setTextSize(Utils.convertDpToPixel(15f));
         mFirstLinePaint.setTypeface(mXAxis.getTypeface());

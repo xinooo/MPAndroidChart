@@ -55,9 +55,11 @@ public class DoubleXLabelAxisRenderer extends MyXAxisRenderer {
         } else { // BOTH SIDED
             pointF.x = 0.5f;
             pointF.y = 1.0f;
+            isTop = true;
             drawLabelsTop(c, mViewPortHandler.contentTop() - yoffset, pointF);
             pointF.x = 0.5f;
             pointF.y = 0.0f;
+            isTop = false;
             drawLabels(c, mViewPortHandler.contentBottom() + yoffset, pointF);
         }
         MPPointF.recycleInstance(pointF);
