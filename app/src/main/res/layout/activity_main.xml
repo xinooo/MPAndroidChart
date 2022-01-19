@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="@string/app_name"
         android:textSize="50sp"
-        app:textRightTopRadius="10dp"
+        app:textRadius="10dp"
         app:textNormalSolidColor="@color/red"
         app:textStrokeWidth="2dp"
         app:textStrokeColor="#303f9f" />

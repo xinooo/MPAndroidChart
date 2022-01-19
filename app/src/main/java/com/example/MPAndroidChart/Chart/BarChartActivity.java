@@ -1,6 +1,7 @@
 package com.example.MPAndroidChart.Chart;
 
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -31,7 +32,7 @@ public class BarChartActivity extends AppCompatActivity {
     private MyBarChart bar_chart;
     String[]  content = new String[] {"交通", "飲食", "家庭開銷", "美容美髮", "旅遊"};
     String[]  content2 = new String[] {"10.5%", "14.5%", "25%", "18%", "22%"};
-    boolean isDataExceedsZero;
+    boolean isDataExceedsZero = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,16 +53,18 @@ public class BarChartActivity extends AppCompatActivity {
         bar_chart.setDrawBorders(false);
         bar_chart.setBorderColor(Color.RED);
         bar_chart.setDrawBarShadow(true);
-        bar_chart.getAxisLeft().setEnabled(false);//不显示左侧
+        bar_chart.getAxisLeft().setEnabled(true);//不显示左侧
+        bar_chart.getAxisLeft().setGridDashedLine(new DashPathEffect(new float[]{10, 5}, 0));
         bar_chart.getAxisRight().setEnabled(false);//不显示右侧
         bar_chart.getAxisRight().setDrawGridLines(false);
         if (isDataExceedsZero) {
-            bar_chart.getAxisLeft().setAxisMinimum(0f);
             bar_chart.getAxisLeft().resetAxisMaximum();
+            bar_chart.getAxisLeft().setAxisMinimum(0f);
         }else {
-            bar_chart.getAxisLeft().setAxisMaximum(0f);
             bar_chart.getAxisLeft().resetAxisMinimum();
+            bar_chart.getAxisLeft().setAxisMaximum(0f);
         }
+        bar_chart.notifyDataSetChanged();
         bar_chart.setDrawValueAboveBar(false);//數值是否顯示在長條圖內
 
         XAxis xAxis = bar_chart.getXAxis();
@@ -87,10 +90,6 @@ public class BarChartActivity extends AppCompatActivity {
 
         bar_chart.setXAxisRenderer(new DoubleXLabelAxisRenderer(bar_chart.getViewPortHandler(), xAxis, bar_chart.getTransformer(YAxis.AxisDependency.LEFT),new IndexAxisValueFormatter(content2)));
 
-
-
-
-
         BarData barData = new BarData(barDataSet);
         barData.setDrawValues(false); //是否顯示數值
         barData.setBarWidth(0.5f);
@@ -102,11 +101,11 @@ public class BarChartActivity extends AppCompatActivity {
     private ArrayList<BarEntry> dataValue(){
         isDataExceedsZero = true;
         ArrayList<BarEntry> dataValue = new ArrayList<BarEntry>();
-        dataValue.add(new BarEntry(0,3.6f));
-        dataValue.add(new BarEntry(1,0.5f));
-        dataValue.add(new BarEntry(2,0.25f));
-        dataValue.add(new BarEntry(3,0.18f));
-        dataValue.add(new BarEntry(4,0.22f));
+        dataValue.add(new BarEntry(0,10.5f));
+        dataValue.add(new BarEntry(1,14.5f));
+        dataValue.add(new BarEntry(2,25f));
+        dataValue.add(new BarEntry(3,18f));
+        dataValue.add(new BarEntry(4,22f));
         return dataValue;
     }
 }
